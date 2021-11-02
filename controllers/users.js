@@ -23,6 +23,16 @@ async function Read(_, res) {
   }
 }
 
+async function ReadById(req, res) {
+  try {
+    const user = await User.obtainById(req.params.id);
+
+    res.json(user);
+  } catch (error) {
+    res.status(503).json({ msg: error });
+  }
+}
+
 async function Delete(req, res) {
   try {
     const id = await User.remove(req.params.id);
@@ -36,5 +46,6 @@ async function Delete(req, res) {
 module.exports = {
   Create,
   Read,
+  ReadById,
   Delete,
 };

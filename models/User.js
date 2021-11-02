@@ -55,8 +55,12 @@ class User {
 
   static async obtainById(id) {
     try {
-      const results = await query("SELECT * FROM user WHERE id = ?", id);
-      return results.map((e) => ({ ...e }));
+      // MySQL
+      // const results = await query("SELECT * FROM user WHERE id = ?", id);
+      // return results.map((e) => ({ ...e }));
+
+      // mongo
+      return await collection.findOne({ _id: ObjectId(id) });
     } catch (error) {
       throw error;
     }
