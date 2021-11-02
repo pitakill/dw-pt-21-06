@@ -1,4 +1,6 @@
 const mysql = require("../store/mysql");
+const mongodb = require("../store/mongodb");
+const { ObjectId } = require("bson");
 
 const query = (str, q) => {
   return new Promise((resolve, reject) => {
@@ -12,6 +14,8 @@ const query = (str, q) => {
   });
 };
 
+const collection = mongodb.collection("users");
+
 class User {
   constructor(options) {
     this.id = options.id;
@@ -23,8 +27,14 @@ class User {
 
   async save() {
     try {
-      const results = await query("INSERT INTO user SET ? ", this);
-      return results;
+      // MySQL
+      // const result = await query("INSERT INTO user SET ? ", this);
+      // return result.insertId;
+
+      // mongo
+      delete this.id;
+      const result = await collection.insertOne(this);
+      return result.insertedId;
     } catch (error) {
       throw error;
     }
@@ -32,8 +42,12 @@ class User {
 
   static async obtain() {
     try {
-      const results = await query("SELECT * FROM user");
-      return results.map((e) => ({ ...e }));
+      // MySQL
+      // const results = await query("SELECT * FROM user");
+      // return results.map((e) => ({ ...e }));
+
+      // mongo
+      return await collection.find().toArray();
     } catch (error) {
       throw error;
     }
@@ -50,16 +64,21 @@ class User {
 
   static async remove(id) {
     try {
-      const users = await this.obtainById(id);
-      if (users.length === 0) {
-        const error = new Error("ERR_ID_NOT_FOUND");
-        error.msg = `No user with id (${id})`;
+      // MySQL
+      // const users = await this.obtainById(id);
+      // if (users.length === 0) {
+      //   const error = new Error("ERR_ID_NOT_FOUND");
+      //   error.msg = `No user with id (${id})`;
+      //
+      //   throw error;
+      // }
+      //
+      // await query(`DELETE FROM user WHERE id = ${users[0].id}`);
+      // return users[0].id;
 
-        throw error;
-      }
-
-      await query(`DELETE FROM user WHERE id = ${users[0].id}`);
-      return users[0];
+      // mongo
+      const result = await collection.findOneAndDelete({ _id: ObjectId(id) });
+      return result.value._id;
     } catch (error) {
       throw error;
     }

@@ -3,10 +3,10 @@ const User = require("../models/User");
 async function Create(req, res) {
   try {
     const user = new User(req.body);
-    const result = await user.save();
+    const id = await user.save();
 
     res.status(201).send({
-      msg: `User created with id: ${result.insertId}`,
+      msg: `User created with id: ${id}`,
     });
   } catch (error) {
     res.status(503).json({ msg: error });
@@ -25,9 +25,9 @@ async function Read(_, res) {
 
 async function Delete(req, res) {
   try {
-    const user = await User.remove(req.params.id);
+    const id = await User.remove(req.params.id);
 
-    res.json({ msg: `User with id (${user.id}) deleted` });
+    res.json({ msg: `User with id (${id}) deleted` });
   } catch (error) {
     res.status(503).json({ msg: error });
   }
