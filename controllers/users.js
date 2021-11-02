@@ -4,7 +4,7 @@ async function Create(req, res) {
   try {
     const user = new User(req.body);
     const result = await user.save();
-    msg: `User created with id: ${result.insertId}`;
+
     res.status(201).send({
       msg: `User created with id: ${result.insertId}`,
     });
@@ -15,7 +15,7 @@ async function Create(req, res) {
 
 async function Read(_, res) {
   try {
-    const users = await User.get();
+    const users = await User.obtain();
 
     res.json(users);
   } catch (error) {
@@ -25,11 +25,10 @@ async function Read(_, res) {
 
 async function Delete(req, res) {
   try {
-    const user = await User.delete(req.params.id);
+    const user = await User.remove(req.params.id);
 
     res.json({ msg: `User with id (${user.id}) deleted` });
   } catch (error) {
-    console.log(error);
     res.status(503).json({ msg: error });
   }
 }

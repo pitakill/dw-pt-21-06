@@ -30,7 +30,7 @@ class User {
     }
   }
 
-  static async get() {
+  static async obtain() {
     try {
       const results = await query("SELECT * FROM user");
       return results.map((e) => ({ ...e }));
@@ -39,7 +39,7 @@ class User {
     }
   }
 
-  static async getById(id) {
+  static async obtainById(id) {
     try {
       const results = await query("SELECT * FROM user WHERE id = ?", id);
       return results.map((e) => ({ ...e }));
@@ -48,9 +48,9 @@ class User {
     }
   }
 
-  static async delete(id) {
+  static async remove(id) {
     try {
-      const users = await this.getById(id);
+      const users = await this.obtainById(id);
       if (users.length === 0) {
         const error = new Error("ERR_ID_NOT_FOUND");
         error.msg = `No user with id (${id})`;
