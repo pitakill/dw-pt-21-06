@@ -2,8 +2,14 @@ const User = require("../models/User");
 
 async function Create(req, res) {
   try {
+    // Sequelize
+    // const {
+    //   dataValues: { id },
+    // } = await User.create(req.body);
+
+    // mongoose
     const user = new User(req.body);
-    const id = await user.save();
+    const { _id: id } = await user.save();
 
     res.status(201).send({
       msg: `User created with id: ${id}`,
@@ -43,9 +49,21 @@ async function Delete(req, res) {
   }
 }
 
+async function ReadLikesByUserId(req, res) {
+  try {
+    const { id } = req.params;
+    const likes = await User.obtainLikesByUserId(id);
+
+    res.json({ user: { id }, likes });
+  } catch (error) {
+    res.status(503).json({ msg: error });
+  }
+}
+
 module.exports = {
   Create,
   Read,
   ReadById,
   Delete,
+  ReadLikesByUserId,
 };
