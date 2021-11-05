@@ -1,4 +1,7 @@
 const express = require("express");
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost:4444/bedu").catch(console.error);
 
 const app = express();
 

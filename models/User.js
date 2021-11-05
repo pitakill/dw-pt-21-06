@@ -1,25 +1,4 @@
-// sequelize
-// const { Sequelize, Model, DataTypes } = require("sequelize");
-// const sequelize = new Sequelize("mysql://root:secret@localhost:3333/bedu");
-//
-// class User extends Model {}
-// User.init(
-//   {
-//     name: DataTypes.STRING,
-//     birthday: DataTypes.DATE,
-//     email: DataTypes.STRING,
-//     city: DataTypes.STRING,
-//   },
-//   { sequelize, modelName: "prueba" }
-// );
-// (async function () {
-//   await sequelize.sync();
-// })();
-// module.exports = User;
-
-// mongoose
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:4444/bedu");
 
 const Schema = new mongoose.Schema(
   {
@@ -34,5 +13,25 @@ const Schema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// https://stackoverflow.com/questions/31728988/using-javascript-whats-the-quickest-way-to-recursively-remove-properties-and-va
+function removeProperty(obj, p) {
+  for (prop in obj) {
+    if (prop === p) {
+      delete obj[prop];
+    } else if (typeof obj[prop] === "object") {
+      removeProperty(obj[prop], p);
+    }
+  }
+}
+
+Schema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (_, ret) {
+    removeProperty(ret, "_id");
+    removeProperty(ret, "password");
+  },
+});
 
 module.exports = mongoose.model("User", Schema);

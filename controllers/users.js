@@ -2,18 +2,10 @@ const User = require("../models/User");
 
 async function Create(req, res) {
   try {
-    // Sequelize
-    // const {
-    //   dataValues: { id },
-    // } = await User.create(req.body);
-
-    // mongoose
     const user = new User(req.body);
-    const { _id: id } = await user.save();
+    const response = await user.save();
 
-    res.status(201).send({
-      msg: `User created with id: ${id}`,
-    });
+    res.status(201).send(response);
   } catch (error) {
     res.status(503).json({ msg: error });
   }
@@ -21,7 +13,7 @@ async function Create(req, res) {
 
 async function Read(_, res) {
   try {
-    const users = await User.obtain();
+    const users = await User.find();
 
     res.json(users);
   } catch (error) {
@@ -31,7 +23,7 @@ async function Read(_, res) {
 
 async function ReadById(req, res) {
   try {
-    const user = await User.obtainById(req.params.id);
+    const user = await User.findById(req.params.id);
 
     res.json(user);
   } catch (error) {
@@ -41,20 +33,9 @@ async function ReadById(req, res) {
 
 async function Delete(req, res) {
   try {
-    const id = await User.remove(req.params.id);
+    await User.findByIdAndDelete(req.params.id);
 
-    res.json({ msg: `User with id (${id}) deleted` });
-  } catch (error) {
-    res.status(503).json({ msg: error });
-  }
-}
-
-async function ReadLikesByUserId(req, res) {
-  try {
-    const { id } = req.params;
-    const likes = await User.obtainLikesByUserId(id);
-
-    res.json({ user: { id }, likes });
+    res.status(204).send();
   } catch (error) {
     res.status(503).json({ msg: error });
   }
@@ -65,5 +46,4 @@ module.exports = {
   Read,
   ReadById,
   Delete,
-  ReadLikesByUserId,
 };
