@@ -1,7 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost:4444/bedu").catch(console.error);
+mongoose.connect(process.env.MONGODB_URI).catch(console.error);
 
 const app = express();
 
@@ -9,4 +10,4 @@ const app = express();
 app.use(express.json());
 app.use("/", require("./routes/users"));
 
-app.listen(3000);
+app.listen(process.env.PORT);
