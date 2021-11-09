@@ -10,6 +10,7 @@ const Schema = new mongoose.Schema(
       unique: true,
       required: [true, "can't be empty"],
     },
+    password: String,
     city: String,
   },
   { timestamps: true }

@@ -3,6 +3,8 @@ const User = require("../models/User");
 async function Create(req, res) {
   try {
     const user = new User(req.body);
+    // base64 is not safe!
+    user.password = Buffer.from(user.password).toString("base64");
     const response = await user.save();
 
     res.status(201).send(response);
